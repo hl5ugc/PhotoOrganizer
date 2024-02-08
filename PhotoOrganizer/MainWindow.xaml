@@ -8,6 +8,21 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid/>
+    <Grid RowDefinitions =" 28,*">
+        <StackPanel 
+            x:Name="TitleBar"
+            Grid.Row="0"
+            Margin="0 0 120 0"
+            Background="{ThemeResource AppBarBackgroundThemeBrush}"
+            Orientation="Horizontal">
+            <Image Source="assets/icons8-windows-10-48.png"/>
+            <TextBlock 
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                Text="{x:Bind Title}"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                TextWrapping="NoWrap" />
+        </StackPanel>
+    </Grid>
 
 </Window>
