@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -32,6 +35,9 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+
+        Ioc.Default.ConfigureServices(new ServiceCollection()
+            .BuildServiceProvider());
     }
 
     /// <summary>
