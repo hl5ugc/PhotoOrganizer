@@ -50,11 +50,12 @@ public sealed partial class MainWindow : Window
     private async void StartButton_Click(object sender, RoutedEventArgs e)
     {
         ContentDialogResult result = await StartSettingsDialog.ShowAsync();
-
         if (result is ContentDialogResult.Primary && ViewModel is not null)
         {
-            ViewModel.InputFolder = SelectedInputFolder;
-            ViewModel.OutputFolder = SelectedOutputFolder;
+            ViewModel.UpdateInputFolderPathCommand?.Execute(SelectedInputFolder?.Path);
+            ViewModel.UpdateOutputFolderPathCommand?.Execute(SelectedOutputFolder?.Path);
+
+            ViewModel.LoadPhotosCommand?.ExecuteAsync(SelectedInputFolder?.Path);
         }
     }
 
@@ -70,7 +71,7 @@ public sealed partial class MainWindow : Window
     private async void SelectedInputFolderButton_Click(object sender, RoutedEventArgs e)
     {
         StorageFolder? folder = await selectFolderAsync();
-        if (folder != null && ViewModel is not null)
+        if (folder is not null)
         {
             SelectedInputFolder = folder;
             SelectedInputFolderTextBox.Text = SelectedInputFolder.Path;
@@ -80,7 +81,7 @@ public sealed partial class MainWindow : Window
     private async void SelectedOutputFolderButton_Click(object sender, RoutedEventArgs e)
     {
         StorageFolder? folder = await selectFolderAsync();
-        if (folder != null && ViewModel is not null)
+        if (folder is not null)
         {
             SelectedOutputFolder = folder;
             SelectedOutputFolderTextBox.Text = SelectedOutputFolder.Path;
@@ -91,16 +92,17 @@ public sealed partial class MainWindow : Window
     {
         updateOutputFolderExample();
     }
+
     private void updateOutputFolderExample()
     {
-        string example = @"[Output]";
+        var example = @"[Output]";
 
         if (SelectedOutputFolder?.Path.Length > 0)
         {
             example = SelectedOutputFolder.Path;
         }
 
-        string dateFormat = createDataFolderFormat();
+        var dateFormat = createDataFolderFormat();
         if (dateFormat.Length > 0)
         {
             example += DateTime.Now.ToString(dateFormat, CultureInfo.InvariantCulture);
@@ -111,7 +113,7 @@ public sealed partial class MainWindow : Window
     }
     private string createDataFolderFormat()
     {
-        string format = string.Empty;
+        var format = string.Empty;
 
         if (CreateDateFolderCheckBox.IsChecked is true)
             format += @"\\yy-MM-dd";
