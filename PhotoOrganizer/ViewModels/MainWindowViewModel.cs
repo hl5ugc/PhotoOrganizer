@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI.UI.Controls.TextToolbarSymbols;
 using Windows.Storage;
+using Windows.Storage.Search;
 
 namespace PhotoOrganizer.ViewModels;
 
@@ -17,6 +21,28 @@ public partial class MainWindowViewModel  : ObservableObject
     public MainWindowViewModel()
     {
 
+    }
+
+    [RelayCommand]
+    private async Task LoadPhotosAsync(string? inputFolderPath,CancellationToken cancellationToken)
+    {
+        if (inputFolderPath is not null && LoadPhotosCommand.IsRunning is false)
+        {
+            StorageFolder? folder = await StorageFolder.GetFolderFromPathAsync(inputFolderPath);
+            if(folder is not null)
+            {
+                List<string> fileTypeFilter = new() { ".jpg", ".jpeg", ".bmp", };
+                QueryOptions queryOptions = new QueryOptions(CommonFileQuery.DefaultQuery,fileTypeFilter);
+                queryOptions.FolderDepth = FolderDepth.Deep;
+                StorageFileQueryResult? results = folder.CreateFileQueryWithOptions(queryOptions);
+                IReadOnlyCollection<StorageFile>? files = await results.GetFilesAsync();
+
+                if(files is not null)
+                {
+
+                }
+            }
+        }
     }
 
     [RelayCommand]

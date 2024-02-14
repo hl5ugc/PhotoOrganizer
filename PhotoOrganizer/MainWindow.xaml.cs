@@ -54,6 +54,8 @@ public sealed partial class MainWindow : Window
         {
             ViewModel.UpdateInputFolderPathCommand?.Execute(SelectedInputFolder?.Path);
             ViewModel.UpdateOutputFolderPathCommand?.Execute(SelectedOutputFolder?.Path);
+
+            ViewModel.LoadPhotosCommand?.ExecuteAsync(SelectedInputFolder?.Path);
         }
     }
 
