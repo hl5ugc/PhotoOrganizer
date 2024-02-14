@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,6 +18,9 @@ public partial class MainWindowViewModel  : ObservableObject
     private StorageFolder? _inputFolder;
     [ObservableProperty]
     private StorageFolder? _outputFolder;
+    [ObservableProperty]
+    private ObservableCollection<PhotoViewModel> _photos = new();
+
 
     public MainWindowViewModel()
     {
@@ -31,6 +35,8 @@ public partial class MainWindowViewModel  : ObservableObject
             StorageFolder? folder = await StorageFolder.GetFolderFromPathAsync(inputFolderPath);
             if(folder is not null)
             {
+                Photos.Clear();
+
                 List<string> fileTypeFilter = new() { ".jpg", ".jpeg", ".bmp", };
                 QueryOptions queryOptions = new QueryOptions(CommonFileQuery.DefaultQuery,fileTypeFilter);
                 queryOptions.FolderDepth = FolderDepth.Deep;
@@ -39,7 +45,20 @@ public partial class MainWindowViewModel  : ObservableObject
 
                 if(files is not null)
                 {
-
+                    List<PhotoViewModel> photoViewModels = new();
+                    foreach (StorageFile file in files)
+                    {
+                        if (cancellationToken.IsCancellationRequested is not true)
+                        {
+                            PhotoViewModel photoViewModel = new(file);
+                            photoViewModels.Add(photoViewModel);
+                        }
+                    }
+                    if (photoViewModels.Count > 0)
+                    {
+                        Photos = new ObservableCollection<PhotoViewModel>(photoViewModels);
+                    }
+                     
                 }
             }
         }
