@@ -93,7 +93,10 @@
                     Grid.Row="1"
                     BorderBrush="DimGray"
                     BorderThickness="0,1,0,0">
-                    <ItemsRepeater x:Name="PhotoList" ItemsSource="{x:Bind ViewModel.Photos, Mode=OneWay}">
+                    <ItemsRepeater 
+                        x:Name="PhotoList" 
+                        ElementPrepared="PhotoList_ElementPrepared"
+                        ItemsSource="{x:Bind ViewModel.Photos, Mode=OneWay}">
                         <ItemsRepeater.Layout>
                             <StackLayout Orientation="Vertical" />
                         </ItemsRepeater.Layout>
@@ -157,16 +160,7 @@
                 BorderBrush="Gray"
                 BorderThickness="1"
                 RowDefinitions="Auto,*" />
-
-
         </Grid>
-
-
-
-
-
-
-
         <!--#endregion-->
 
         <!--#region Start Setting Dialog-->

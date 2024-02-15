@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI.UI.Controls.TextToolbarSymbols;
+using Microsoft.UI.Xaml.Controls;
+using PhotoOrganizer.Interfaces;
 using Windows.Storage;
 using Windows.Storage.Search;
 
@@ -14,17 +16,19 @@ namespace PhotoOrganizer.ViewModels;
  
 public partial class MainWindowViewModel  : ObservableObject
 {
+    private readonly IThumbNailService _thumbNailService;
+
     [ObservableProperty]
     private StorageFolder? _inputFolder;
     [ObservableProperty]
     private StorageFolder? _outputFolder;
     [ObservableProperty]
     private ObservableCollection<PhotoViewModel> _photos = new();
+ 
 
-
-    public MainWindowViewModel()
+    public MainWindowViewModel(IThumbNailService thumbNailService)
     {
-
+        _thumbNailService = thumbNailService;
     }
 
     [RelayCommand]
@@ -50,7 +54,7 @@ public partial class MainWindowViewModel  : ObservableObject
                     {
                         if (cancellationToken.IsCancellationRequested is not true)
                         {
-                            PhotoViewModel photoViewModel = new(file);
+                            PhotoViewModel photoViewModel = new(file, _thumbNailService);
                             photoViewModels.Add(photoViewModel);
                         }
                     }
@@ -87,5 +91,13 @@ public partial class MainWindowViewModel  : ObservableObject
                 OutputFolder = folder;
             }
         }
+    }
+    [RelayCommand]
+    private Task PreparePhotoAsync(int photoIndex)
+    {
+        PhotoViewModel photoViewModel = Photos[photoIndex];
+
+        return photoViewModel.LoadThumbnailAync();
+
     }
 }

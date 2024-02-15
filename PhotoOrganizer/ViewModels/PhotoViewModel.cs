@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media.Imaging;
+using PhotoOrganizer.Interfaces;
+using PhotoOrganizer.Services;
 using Windows.Storage;
 
 namespace PhotoOrganizer.ViewModels;
@@ -13,6 +15,7 @@ public partial class PhotoViewModel : ObservableObject
 {
     #region Fields
     private readonly StorageFile _file;
+    private readonly IThumbNailService thumbNailService;
 
     [ObservableProperty]
     private BitmapImage? _thumbNail;
@@ -28,11 +31,20 @@ public partial class PhotoViewModel : ObservableObject
     private string? _outputFilePath;
     #endregion
 
-    public PhotoViewModel(StorageFile file)
+    public PhotoViewModel(StorageFile file,IThumbNailService ithumbNailService)
     {
         _file = file;
+        thumbNailService = ithumbNailService;
         InputFileName = _file.Name;
         InputFilePath = _file.Path.ToString();
 
+    }
+
+    public async Task LoadThumbnailAync()
+    {
+        if (ThumbNail is null)
+        {
+            ThumbNail = await thumbNailService.GetThumbNail(_file);
+        }
     }
 }
