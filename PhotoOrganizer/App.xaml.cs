@@ -42,6 +42,7 @@ public partial class App : Application
         Ioc.Default.ConfigureServices(new ServiceCollection()
             .AddMemoryCache()
             .AddSingleton<IThumbNailService,ThumbNailService>()
+            .AddSingleton<IMetadataSerice,MetadataSerice>()
             .AddSingleton<MainWindowViewModel>()
             .BuildServiceProvider());
     }

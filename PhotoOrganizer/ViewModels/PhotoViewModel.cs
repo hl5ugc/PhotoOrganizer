@@ -15,7 +15,7 @@ public partial class PhotoViewModel : ObservableObject
 {
     #region Fields
     private readonly StorageFile _file;
-    private readonly IThumbNailService thumbNailService;
+    private readonly IThumbNailService? _thumbNailService;
 
     [ObservableProperty]
     private BitmapImage? _thumbNail;
@@ -31,10 +31,10 @@ public partial class PhotoViewModel : ObservableObject
     private string? _outputFilePath;
     #endregion
 
-    public PhotoViewModel(StorageFile file,IThumbNailService ithumbNailService)
+    public PhotoViewModel(StorageFile file,IThumbNailService? ithumbNailService)
     {
         _file = file;
-        thumbNailService = ithumbNailService;
+        _thumbNailService = ithumbNailService;
         InputFileName = _file.Name;
         InputFilePath = _file.Path.ToString();
 
@@ -42,9 +42,9 @@ public partial class PhotoViewModel : ObservableObject
 
     public async Task LoadThumbnailAync()
     {
-        if (ThumbNail is null)
+        if (ThumbNail is null && _thumbNailService is not null)
         {
-            ThumbNail = await thumbNailService.GetThumbNail(_file);
+            ThumbNail = await _thumbNailService.GetThumbNail(_file);
         }
     }
 }
