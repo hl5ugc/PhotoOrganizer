@@ -13,6 +13,7 @@
     <Grid RowDefinitions=" 28,Auto,*">
         <!--#region Resrce-->
         <Grid.Resources>
+            <!-- HeaderedContentControl Style for general use -->
             <Style TargetType="controls:HeaderedContentControl">
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
@@ -22,6 +23,20 @@
                     </Setter.Value>
                 </Setter>
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+            <!-- HeaderedContentControl Style for PhotoViewModel -->
+            <Style x:Key="HeaderedContentControlPhotoViewModelStyle" TargetType="controls:HeaderedContentControl">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock FontWeight="SemiBold" Text="{Binding}"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Orientation" Value="Vertical"/>
+                <Setter Property="Margin" Value="15,0,0,0"/>
             </Style>
         </Grid.Resources>
         <!--#endregion-->
@@ -93,7 +108,10 @@
                     Grid.Row="1"
                     BorderBrush="DimGray"
                     BorderThickness="0,1,0,0">
-                    <ItemsRepeater x:Name="PhotoList" ItemsSource="{x:Bind ViewModel.Photos, Mode=OneWay}">
+                    <ItemsRepeater 
+                        x:Name="PhotoList" 
+                        ElementPrepared="PhotoList_ElementPrepared"
+                        ItemsSource="{x:Bind ViewModel.Photos, Mode=OneWay}">
                         <ItemsRepeater.Layout>
                             <StackLayout Orientation="Vertical" />
                         </ItemsRepeater.Layout>
@@ -120,24 +138,24 @@
                                         Text="{x:Bind InputFileName, Mode=OneWay}" />
 
                                     <!--  input file path  -->
-                                    <controls:HeaderedContentControl Header="Input">
+                                    <controls:HeaderedContentControl Header="Input" Style="{StaticResource HeaderedContentControlPhotoViewModelStyle}">
                                         <TextBlock Text="{x:Bind InputFilePath, Mode=OneWay}" />
                                     </controls:HeaderedContentControl>
 
                                     <!--  Ouput file path  -->
-                                    <controls:HeaderedContentControl Header="Output">
+                                    <controls:HeaderedContentControl Header="Output" Style="{StaticResource HeaderedContentControlPhotoViewModelStyle}">
                                         <TextBlock Text="{x:Bind OutputFilePath, Mode=OneWay}" />
                                     </controls:HeaderedContentControl>
                                     <StackPanel Orientation="Horizontal">
                                         <!--  Date Token  -->
-                                        <controls:HeaderedContentControl Header="Date Token">
+                                        <controls:HeaderedContentControl Header="Date Token"  Style="{StaticResource HeaderedContentControlPhotoViewModelStyle}">
                                             <TextBlock Text="{x:Bind DateTaken, Mode=OneWay}" />
                                         </controls:HeaderedContentControl>
+                                        <!--  file Size  -->
+                                        <controls:HeaderedContentControl Header="FileSize"  Style="{StaticResource HeaderedContentControlPhotoViewModelStyle}">
+                                            <TextBlock Text="{x:Bind FilseSize, Mode=OneWay}" />
+                                        </controls:HeaderedContentControl>
                                     </StackPanel>
-                                    <!--  file Size  -->
-                                    <controls:HeaderedContentControl Header="FileSize">
-                                        <TextBlock Text="{x:Bind FilseSize, Mode=OneWay}" />
-                                    </controls:HeaderedContentControl>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
@@ -157,16 +175,7 @@
                 BorderBrush="Gray"
                 BorderThickness="1"
                 RowDefinitions="Auto,*" />
-
-
         </Grid>
-
-
-
-
-
-
-
         <!--#endregion-->
 
         <!--#region Start Setting Dialog-->

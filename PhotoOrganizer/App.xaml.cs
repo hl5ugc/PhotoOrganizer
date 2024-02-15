@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using PhotoOrganizer.Interfaces;
+using PhotoOrganizer.Services;
 using PhotoOrganizer.ViewModels;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -38,6 +40,9 @@ public partial class App : Application
         this.InitializeComponent();
 
         Ioc.Default.ConfigureServices(new ServiceCollection()
+            .AddMemoryCache()
+            .AddSingleton<IThumbNailService,ThumbNailService>()
+            .AddSingleton<IMetadataSerice,MetadataSerice>()
             .AddSingleton<MainWindowViewModel>()
             .BuildServiceProvider());
     }
