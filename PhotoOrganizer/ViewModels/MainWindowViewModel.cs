@@ -16,29 +16,37 @@ namespace PhotoOrganizer.ViewModels;
  
 public partial class MainWindowViewModel  : ObservableObject
 {
-    private readonly IThumbNailService _thumbNailService;
+    //private readonly IThumbNailService _thumbNailService;
 
     [ObservableProperty]
     private StorageFolder? _inputFolder;
+
     [ObservableProperty]
     private StorageFolder? _outputFolder;
+
     [ObservableProperty]
     private ObservableCollection<PhotoViewModel> _photos = new();
+
     [ObservableProperty]
     private string? _outputFolderFormat = string.Empty ;
 
     [ObservableProperty]
     private bool _hasPhotos;
+
     [ObservableProperty]
     private int _foundFilesCount;
+
     [ObservableProperty]
     private int _loadedFilesCount;
 
-    public MainWindowViewModel(IThumbNailService thumbNailService)
+    //public MainWindowViewModel(IThumbNailService thumbNailService)
+    //{
+    //    _thumbNailService = thumbNailService;
+    //}
+    public MainWindowViewModel()
     {
-        _thumbNailService = thumbNailService;
+        
     }
-
     [RelayCommand]
     private async Task LoadPhotosAsync(string? inputFolderPath,CancellationToken cancellationToken)
     {
@@ -48,6 +56,7 @@ public partial class MainWindowViewModel  : ObservableObject
             if(folder is not null)
             {
                 Photos.Clear();
+                HasPhotos = false;
 
                 List<string> fileTypeFilter = new() { ".jpg", ".jpeg", ".bmp", };
                 QueryOptions queryOptions = new QueryOptions(CommonFileQuery.DefaultQuery,fileTypeFilter);
