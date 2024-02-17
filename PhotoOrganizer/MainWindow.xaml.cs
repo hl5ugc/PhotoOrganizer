@@ -55,6 +55,9 @@ public sealed partial class MainWindow : Window
             ViewModel.UpdateInputFolderPathCommand?.Execute(SelectedInputFolder?.Path);
             ViewModel.UpdateOutputFolderPathCommand?.Execute(SelectedOutputFolder?.Path);
 
+            string folderFormat = CreateDataFolderFormat();
+            ViewModel.UpdateOutputFolderFormatCommand?.Execute(folderFormat);
+
             ViewModel.LoadPhotosCommand?.ExecuteAsync(SelectedInputFolder?.Path);
         }
     }
@@ -102,7 +105,7 @@ public sealed partial class MainWindow : Window
             example = SelectedOutputFolder.Path;
         }
 
-        var dateFormat = createDataFolderFormat();
+        var dateFormat = CreateDataFolderFormat();
         if (dateFormat.Length > 0)
         {
             example += DateTime.Now.ToString(dateFormat, CultureInfo.InvariantCulture);
@@ -111,7 +114,7 @@ public sealed partial class MainWindow : Window
 
         ExampleTextBlock.Text = example;
     }
-    private string createDataFolderFormat()
+    private string CreateDataFolderFormat()
     {
         var format = string.Empty;
 

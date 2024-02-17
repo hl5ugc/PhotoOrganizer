@@ -109,6 +109,9 @@ public partial class MainWindowViewModel  : ObservableObject
         }
     }
     [RelayCommand]
+    private void UpdateOutputFolderFormat(string folderFormat) => OutputFolderFormat = folderFormat;
+
+    [RelayCommand]
     private async Task UpdateOutputFolderPath(string? folderPath)
     {
         if (folderPath is not null)

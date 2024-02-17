@@ -10,7 +10,7 @@
     xmlns:viewmodels="using:PhotoOrganizer.ViewModels"
     mc:Ignorable="d">
 
-    <Grid RowDefinitions=" 28,Auto,*">
+    <Grid RowDefinitions="28,Auto,*">
         <!--#region Resrce-->
         <Grid.Resources>
             <!--  HeaderedContentControl Style for general use  -->
@@ -41,7 +41,7 @@
         </Grid.Resources>
         <!--#endregion-->
 
-        <!--#region Title Bar-->
+        <!--#region Title Bar ( RoW = 0 ) -->
         <StackPanel
             x:Name="TitleBar"
             Grid.Row="0"
@@ -58,7 +58,7 @@
         </StackPanel>
         <!--#endregion-->
 
-        <!--#region Operations-->
+        <!--#region Operations ( RoW = 1 ) -->
         <Grid
             Grid.Row="1"
             Margin="10"
@@ -87,28 +87,30 @@
         </Grid>
         <!--#endregion-->
 
-        <!--#region Item View-->
+        <!--#region Item View ( RoW = 2 ) -->
         <Grid
             Grid.Row="2"
             Margin="10,0,10,10"
-            ColumnDefinitions="*,5,*">
+            ColumnDefinitions="2*,5,*">
+            <!--  Input Panel (Left Side)  -->
             <!--  Input Panel (Left Side)  -->
             <Grid
                 Grid.Column="0"
                 BorderBrush="Gray"
                 BorderThickness="1"
                 RowDefinitions="Auto,*">
+
                 <Grid
                     Grid.Row="0"
                     Margin="5,0,5,0"
                     ColumnDefinitions="Auto,*">
                     <TextBlock
-                        Grid.Row="0"
+                        Grid.Column="0"
                         FontSize="15"
                         FontWeight="Bold"
                         Text="Input" />
                     <TextBlock
-                        Grid.Row="1"
+                        Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Bottom"
                         Visibility="{x:Bind ViewModel.HasPhotos, Mode=OneWay}">
@@ -119,6 +121,7 @@
                         <Run Text=")" />
                     </TextBlock>
                 </Grid>
+                
                 <ScrollViewer
                     Grid.Row="1"
                     BorderBrush="DimGray"
@@ -256,17 +259,17 @@
                             x:Name="CreateYearFolderCheckBox"
                             Click="FolderStructureCheckBox_Click"
                             Content="Year"
-                            IsChecked="False" />
+                            IsChecked="True" />
                         <CheckBox
                             x:Name="CreateMonthFolderCheckBox"
                             Click="FolderStructureCheckBox_Click"
                             Content="Month"
-                            IsChecked="False" />
+                            IsChecked="True" />
                         <CheckBox
                             x:Name="CreateDayFolderCheckBox"
                             Click="FolderStructureCheckBox_Click"
                             Content="Day"
-                            IsChecked="False" />
+                            IsChecked="True" />
                     </StackPanel>
                 </controls:HeaderedContentControl>
                 <!--  Output Example  -->
@@ -302,11 +305,12 @@
             Grid.Row="1"
             Grid.RowSpan="2"
             Background="Black"
-            ColumnDefinitions="*,*,*"
+            ColumnDefinitions="*,2*,*"
+            RowDefinitions="Auto,*,Auto"
             Opacity="0.9"
             Visibility="{x:Bind ViewModel.LoadPhotosCommand.IsRunning, Mode=OneWay}">
             <StackPanel
-                Grid.Row="1"
+                Grid.Row="0"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 Spacing="10">
@@ -344,8 +348,6 @@
                     Click="CancelButton_Click"
                     Content="Cancel" />
             </StackPanel>
-
-
         </Grid>
         <!--#endregion-->
 
