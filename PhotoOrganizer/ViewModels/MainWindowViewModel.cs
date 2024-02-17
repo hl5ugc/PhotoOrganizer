@@ -27,6 +27,13 @@ public partial class MainWindowViewModel  : ObservableObject
     [ObservableProperty]
     private string? _outputFolderFormat = string.Empty ;
 
+    [ObservableProperty]
+    private bool _hasPhotos;
+    [ObservableProperty]
+    private int _foundFilesCount;
+    [ObservableProperty]
+    private int _loadedFilesCount;
+
     public MainWindowViewModel(IThumbNailService thumbNailService)
     {
         _thumbNailService = thumbNailService;
@@ -51,6 +58,10 @@ public partial class MainWindowViewModel  : ObservableObject
                 if(files is not null)
                 {
                     List<PhotoViewModel> photoViewModels = new();
+                    IProgress<int> progress = new Progress<int>(x => LoadedFilesCount = x);
+                    FoundFilesCount = files.Count;
+                    int reportingInterval = Math.Max(files.Count / 100, 1);
+
                     foreach (StorageFile file in files)
                     {
                         if (cancellationToken.IsCancellationRequested is not true)
@@ -64,11 +75,20 @@ public partial class MainWindowViewModel  : ObservableObject
                                 .BuildAsync();
 
                             photoViewModels.Add(photoViewModel);
+
+                            if ((photoViewModels.Count % reportingInterval) == 0)
+                            {
+                                progress.Report(photoViewModels.Count);
+                            }
+
+                            // await Task.Delay(1000);
                         }
                     }
                     if (photoViewModels.Count > 0)
                     {
+                        LoadedFilesCount = photoViewModels.Count;
                         Photos = new ObservableCollection<PhotoViewModel>(photoViewModels);
+                        HasPhotos = Photos.Count > 0;
                     }
                      
                 }

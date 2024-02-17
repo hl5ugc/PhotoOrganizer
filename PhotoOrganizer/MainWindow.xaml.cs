@@ -132,4 +132,9 @@ public sealed partial class MainWindow : Window
     {
         ViewModel?.PreparePhotoCommand?.ExecuteAsync(args.Index);
     }
+
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.LoadPhotosCommand?.Cancel();
+    }
 }
