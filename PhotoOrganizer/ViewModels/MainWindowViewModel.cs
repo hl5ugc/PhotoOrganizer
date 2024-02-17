@@ -16,22 +16,37 @@ namespace PhotoOrganizer.ViewModels;
  
 public partial class MainWindowViewModel  : ObservableObject
 {
-    private readonly IThumbNailService _thumbNailService;
+    //private readonly IThumbNailService _thumbNailService;
 
     [ObservableProperty]
     private StorageFolder? _inputFolder;
+
     [ObservableProperty]
     private StorageFolder? _outputFolder;
+
     [ObservableProperty]
     private ObservableCollection<PhotoViewModel> _photos = new();
+
     [ObservableProperty]
     private string? _outputFolderFormat = string.Empty ;
 
-    public MainWindowViewModel(IThumbNailService thumbNailService)
-    {
-        _thumbNailService = thumbNailService;
-    }
+    [ObservableProperty]
+    private bool _hasPhotos;
 
+    [ObservableProperty]
+    private int _foundFilesCount;
+
+    [ObservableProperty]
+    private int _loadedFilesCount;
+
+    //public MainWindowViewModel(IThumbNailService thumbNailService)
+    //{
+    //    _thumbNailService = thumbNailService;
+    //}
+    public MainWindowViewModel()
+    {
+        
+    }
     [RelayCommand]
     private async Task LoadPhotosAsync(string? inputFolderPath,CancellationToken cancellationToken)
     {
@@ -41,6 +56,7 @@ public partial class MainWindowViewModel  : ObservableObject
             if(folder is not null)
             {
                 Photos.Clear();
+                HasPhotos = false;
 
                 List<string> fileTypeFilter = new() { ".jpg", ".jpeg", ".bmp", };
                 QueryOptions queryOptions = new QueryOptions(CommonFileQuery.DefaultQuery,fileTypeFilter);
@@ -51,6 +67,10 @@ public partial class MainWindowViewModel  : ObservableObject
                 if(files is not null)
                 {
                     List<PhotoViewModel> photoViewModels = new();
+                    IProgress<int> progress = new Progress<int>(x => LoadedFilesCount = x);
+                    FoundFilesCount = files.Count;
+                    int reportingInterval = Math.Max(files.Count / 100, 1);
+
                     foreach (StorageFile file in files)
                     {
                         if (cancellationToken.IsCancellationRequested is not true)
@@ -64,11 +84,20 @@ public partial class MainWindowViewModel  : ObservableObject
                                 .BuildAsync();
 
                             photoViewModels.Add(photoViewModel);
+
+                            if ((photoViewModels.Count % reportingInterval) == 0)
+                            {
+                                progress.Report(photoViewModels.Count);
+                            }
+
+                            // await Task.Delay(1000);
                         }
                     }
                     if (photoViewModels.Count > 0)
                     {
+                        LoadedFilesCount = photoViewModels.Count;
                         Photos = new ObservableCollection<PhotoViewModel>(photoViewModels);
+                        HasPhotos = Photos.Count > 0;
                     }
                      
                 }
@@ -88,6 +117,9 @@ public partial class MainWindowViewModel  : ObservableObject
             }
         }
     }
+    [RelayCommand]
+    private void UpdateOutputFolderFormat(string folderFormat) => OutputFolderFormat = folderFormat;
+
     [RelayCommand]
     private async Task UpdateOutputFolderPath(string? folderPath)
     {

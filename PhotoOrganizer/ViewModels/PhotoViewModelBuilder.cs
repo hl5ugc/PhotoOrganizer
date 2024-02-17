@@ -36,10 +36,16 @@ public class PhotoViewModelBuilder
            _outputFolderFormat is not null &&
            photoViewModel.DateTaken is not null)
         {
-            photoViewModel.OutputFilePath = CreateDateTimeFormatedFolderPath(
+            string? outputFilePath = CreateDateTimeFormatedFolderPath(
                 photoViewModel.DateTaken,
                 _outputBaseFolderPath,
                 _outputFolderFormat);
+
+            if (outputFilePath is not null)
+            {
+                outputFilePath += $"\\{photoViewModel.InputFileName}";
+            }
+            photoViewModel.OutputFilePath = outputFilePath;
         }
 
         return photoViewModel;
@@ -61,10 +67,10 @@ public class PhotoViewModelBuilder
         return this;
     }
 
-    public PhotoViewModelBuilder WithOutputFolderPath(string outputBaseFolderPath, string? format)
+    public PhotoViewModelBuilder WithOutputFolderPath(string outputBaseFolderPath, string? folderformat)
     {
         _outputBaseFolderPath = outputBaseFolderPath;
-        _outputFolderFormat = format;
+        _outputFolderFormat = folderformat;
         return this;
     }
 
