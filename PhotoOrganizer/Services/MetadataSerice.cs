@@ -29,6 +29,7 @@ public class MetadataSerice : IMetadataSerice
     {
         IReadOnlyList<Directory>? directories = ImageMetadataReader.ReadMetadata(file.Path);
         ExifSubIfdDirectory? directory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
         if (directory != null)
         {
             if (directory?.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out DateTime dateTime) is true)
@@ -36,5 +37,6 @@ public class MetadataSerice : IMetadataSerice
         }
 
         return null;
+
     }
 }
